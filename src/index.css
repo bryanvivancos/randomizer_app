@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@plugin "@midudev/tailwind-animations";
+
+@font-face {
+    font-family: "Inter-Italic";
+    src: url("src/assets/fonts/Inter-Italic-VariableFont_opsz,wght.woff2");
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter-Variable";
+    src: url("src/assets/fonts/Inter-VariableFont_opsz,wght.woff2");
+    font-style: normal;
+    font-display: swap;
+}
+
+@theme {
+    --font-Inter-Italic: "Inter-Italic", sans-serif;
+    --font-Inter-Variable: "Inter-Variable", sans-serif;
+}
