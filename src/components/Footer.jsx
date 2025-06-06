@@ -5,7 +5,7 @@ const Footer = () => {
     const year = new Date().getFullYear()
 
     return (
-        <footer className="text-white font-Quick flex flex-col items-center gap-0 mb-0 mt-14">
+        <footer className="text-white font-Quick flex flex-col items-center gap-0 mb-4 mt-14">
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex flex-col items-center justify-center gap-4">
