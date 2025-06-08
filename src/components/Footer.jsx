@@ -1,5 +1,5 @@
 import { FOOTER_DESCRIPTION, LINKEDIN, INSTAGRAM, GITHUB } from "../CONSTANTS";
-import sprite from '../assets/sprite.svg';
+import sprite from '/assets/sprite.svg';
 
 const Footer = () => { 
     const year = new Date().getFullYear()

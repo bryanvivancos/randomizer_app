@@ -1,4 +1,4 @@
-import sprite from '../../assets/sprite.svg'
+import sprite from '/assets/sprite.svg'
 
 const DeleteButton = ({ onClick }) => {
     return (

@@ -1,4 +1,4 @@
-import sprite from "../../assets/sprite.svg"
+import sprite from "/assets/assets/sprite.svg"
 
 const FieldsButton = ({ onClick, textOnBtn,icon }) => {
     

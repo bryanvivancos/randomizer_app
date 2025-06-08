@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import sprite from '../../assets/sprite.svg'
+import sprite from '/assets/sprite.svg'
 
 const GameButton = ({ico, to, gameName}) => {
     return <Link to={to}>
