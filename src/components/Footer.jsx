@@ -39,7 +39,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            <a href="https://github.com/bryanvivancos/bjlinks-react-tailwind"
+            <a href="https://github.com/bryanvivancos/randomizer_app"
             target="_blank">
                 <p className="text-xs text-center mt-8 md:mt-12 text-gray-300">
                     © 2020-{year} <span>Desarrollado con ❤️ por Bryan Vivanco</span>
