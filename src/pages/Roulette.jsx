@@ -21,12 +21,6 @@ function Roulette() {
         }
         return [{ value: "" }]
     })
-
-    //Save fields on LocalStorage
-    useEffect(() => {
-        window.localStorage.setItem("inputFields", JSON.stringify(inputFields))
-    }, [inputFields])
-
     const [noWinners, setInputWinners] = useState("")
     const [winners, setWinners] = useState([])
     const [showModal, setShowModal] = useState(false) //enseña ganadores en modal
@@ -86,6 +80,11 @@ function Roulette() {
         }
     }
 
+    //Save fields on LocalStorage
+    useEffect(() => {
+        window.localStorage.setItem("inputFields", JSON.stringify(inputFields))
+    }, [inputFields])
+
         //Function for reset fields
     const resetFields = () => {
         setInputFields([{ value: "" }])
@@ -95,7 +94,7 @@ function Roulette() {
     return (
         <div className="font-Inter-Variable text-white flex flex-col items-center gap-8 my-14">
             <h1 className="text-5xl font-bold">Bienvenido a Roulette</h1>
-            <p className="text-xs text-center max-w-xl">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
+            <p className="text-xs text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
             <h2 className="text-xl font-bold">Ingresa a los participantes</h2>
                 
             <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800">
@@ -109,7 +108,7 @@ function Roulette() {
                             placeholder= "Ingresa un participante"
                             value={inputField.value}
                             onValueChange={(e) => handleValueChange(index,e)}
-                            className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto"
+                            className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 min-w-28"
                             classNames={{
                                 innerWrapper: "outline-none",
                                 mainWrapper: "outline-none",
@@ -124,8 +123,6 @@ function Roulette() {
                         {/* // BOTON PARA ELIMINAR CASILLA DE GANADORES */}
                         <DeleteButton 
                         onClick={() => handleRemoveFields(index)}/>
-
-                        {console.log(inputField.value.length)}
                     </div>
                 ))}
             
@@ -148,7 +145,7 @@ function Roulette() {
                 placeholder= "Cantidad de ganadores"
                 value={noWinners}
                 onValueChange={setInputWinners}
-                className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto"
+                className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto min-w-28"
                 classNames={{
                     innerWrapper: "outline-none",
                     mainWrapper: "outline-none",
