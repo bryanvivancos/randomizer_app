@@ -10,7 +10,8 @@ function App() {
       <ul className="flex items-center justify-center w-full mt-4">
         
         <GameButton ico={"lottery-icon1"}
-          to={"/roulette"}/>
+          to={"/roulette"}
+          gameName={"Roulette"}/>
         
       </ul>
     </div>
