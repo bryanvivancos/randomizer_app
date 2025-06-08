@@ -45,7 +45,7 @@ const Footer = () => {
                     © 2020-{year} <span>Desarrollado con ❤️ por Bryan Vivanco</span>
                 </p>
             </a>
-            <span className="text-xs text-gray-300">Piura - Perú</span>
+            <span className="text-xs text-gray-300">Perú</span>
         </footer>
     )
 }
