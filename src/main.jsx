@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import Roulette from './pages/Roulette'
 import NotFound from './pages/NotFound'
 import "./index.css"
+import RandNumGen from './pages/RandNumGen'
 
 createRoot(document.getElementById('root')).render(
 <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')).render(
 		<Routes>
 			<Route path='/' element={<App />} />
 			<Route path='/roulette' element={<Roulette/>}/>
+			<Route path='/randnumgenerator' element={<RandNumGen/>}/>
 			<Route path='/*' element={<NotFound/>}/>
 		</Routes>
 		<Footer/>
