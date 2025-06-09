@@ -94,7 +94,7 @@ function Roulette() {
     return (
         <div className="font-Inter-Variable text-white flex flex-col items-center gap-8 my-14">
             <h1 className="text-5xl font-bold text-balance">Bienvenido a Roulette</h1>
-            <p className="text-xs text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
+            <p className="text-sm text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
             <h2 className="text-xl font-bold">Ingresa a los participantes</h2>
                 
             <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800">
@@ -160,7 +160,7 @@ function Roulette() {
 
             {/* // ALERTA QUE INDICA QUE LA CANTIDAD DE GANADORES DEBE SER MENOR A LA CANTIDAD DE PARTICIPANTES  */}
             {showAlert && (
-                <p className="text-white text-xs">
+                <p className="text-white text-sm">
                     La cantidad de ganadores a escoger debe ser un número y menor a la cantidad de participantes
                 </p>
             )}

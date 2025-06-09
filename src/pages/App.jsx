@@ -7,11 +7,15 @@ function App() {
     <div className="font-Inter-Variable text-white flex flex-col items-center gap-8 my-14">
       <h1 className="text-5xl font-bold text-balance">Bienvenido a Randomizer</h1>
       <h2 className="text-2xl font-bold">Selecciona tu juego</h2>
-      <ul className="flex items-center justify-center w-full mt-4">
+      <ul className="grid grid-cols-2 items-center justify-center max-w-2xl mt-4 gap-8">
         
         <GameButton ico={"lottery-icon1"}
           to={"/roulette"}
           gameName={"Roulette"}/>
+
+        <GameButton ico={"random-numbers-icon"}
+          to={"/rand-num-generator"}
+          gameName={"Generador de Números Aleatorio"}/>
         
       </ul>
     </div>

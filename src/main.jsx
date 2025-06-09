@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')).render(
 		<Routes>
 			<Route path='/' element={<App />} />
 			<Route path='/roulette' element={<Roulette/>}/>
-			<Route path='/randnumgenerator' element={<RandNumGen/>}/>
+			<Route path='/rand-num-generator' element={<RandNumGen/>}/>
 			<Route path='/*' element={<NotFound/>}/>
 		</Routes>
 		<Footer/>
