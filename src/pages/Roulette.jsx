@@ -1,11 +1,10 @@
 import { useState } from "react"
 import DeleteButton from "../components/atoms/DeleteButton";
 import FieldsButton from "../components/atoms/FieldsButton";
-// import InputBox from "../components/atoms/InputBox";
 import WinnerModal from "../components/WinnerModal";
 import confetti from "canvas-confetti";
 import {Input, Textarea} from "@heroui/input";
-import { useEffect } from "react";
+import { resetFields, saveToStorage } from "../logic/roulette/storage/storage";
 
 function Roulette() {
 
@@ -81,10 +80,6 @@ function Roulette() {
             
 
         //  EJECUTAMOS SELECCIONAR GANADORES SI LA CANTIDAD DE ESTOS ES MENOR A LA CANTIDAD DE PARTICIPANTES
-            // console.log(inputsArray.length)
-            // console.log(inputsArray)
-            // console.log(textInputsArrayFilter.length)
-            // console.log(textInputsArrayFilter)
         if (inputsArray.length > 0 && textInputsArrayFilter.length > 0){
             setShowAlert(true)
             setTimeout(() => {
@@ -123,26 +118,11 @@ function Roulette() {
         }
     }
 
-    //Save fields on LocalStorage
-    useEffect(() => {
-        window.localStorage.setItem("inputFields", JSON.stringify(inputFields))
-    }, [inputFields])
+    saveToStorage ({
+        inputFields: inputFields,
+        textValue: textValue
+    })
 
-    useEffect(() => {
-        window.localStorage.setItem("textValue", textValue)
-    }, [textValue])
-
-    //Function for reset fields
-    const resetFields = (item) => {
-        if (item === 'input') {
-            setInputFields([{ value: "" }])    
-        }
-        if (item === 'textarea') {
-            setTextValue("")
-        } 
-        window.localStorage.removeItem('inputFields')
-        window.localStorage.removeItem('textValue')
-    }
 
     return (
         <div className="font-Inter-Variable text-white flex flex-col items-center gap-8 my-14">
@@ -150,11 +130,11 @@ function Roulette() {
             <p className="text-sm text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
             <h2 className="text-xl font-bold">Ingresa los participantes uno por uno</h2>
                 
-            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800">
+            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 w-sm">
 
                 {/* // INPUTS PARA INGRESAR PARTICIPANTES  */}
                 {inputFields.map((inputField, index) => (
-                    <div className="flex justify-center items-center gap-4" key={index}>
+                    <div className="flex justify-center items-center gap-4 w-full px-2" key={index}>
 
                         <Input
                             isRequired 
@@ -168,10 +148,6 @@ function Roulette() {
                                 input: "outline-none"
                             }}
                         />
-                        {/* <InputBox 
-                            placeholder={"Ingresa un participante"}
-                            value={inputField.value}
-                            onChange={(e) => handleValueChange(index,e)}/> */}
 
                         {/* // BOTON PARA ELIMINAR CASILLA DE GANADORES */}
                         <DeleteButton 
@@ -180,13 +156,17 @@ function Roulette() {
                 ))}
             
                 {/* // BONTON PARA AGREGAR CASILLA DE PARTICIPANTES  */}
-                <div className="flex gap-2">
+                <div className="flex gap-4 justify-">
                     <FieldsButton
                     onClick={handleAddFields}
                     textOnBtn={"Añadir participante"}
                     icon={"plus"}/>
                     <FieldsButton
-                        onClick={() => resetFields("input")}
+                        onClick={() => resetFields({
+                            item:"input",
+                            setInputFields: setInputFields
+                            })
+                        }
                         textOnBtn={"Reset"}
                         icon={"restart-icon"}/>
                 </div>
@@ -195,7 +175,7 @@ function Roulette() {
             {/* // INGRESA LOS PARTICIPANTES EN UN TEXTAREA */}
             <h2 className="text-xl font-bold">O ingresa a todos los participantes</h2>
 
-            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 w-80">
+            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 w-sm">
 
                 <Textarea
                     
@@ -212,7 +192,12 @@ function Roulette() {
                     }}
                 />
                 <FieldsButton
-                        onClick={() => resetFields("textarea")}
+                        // onClick={() => resetFields("textarea",setTextValue(""))}
+                        onClick={() => resetFields({
+                            item:"textarea",
+                            setTextValue: setTextValue
+                            })
+                        }
                         textOnBtn={"Reset"}
                         icon={"restart-icon"}/>
                 
@@ -232,11 +217,6 @@ function Roulette() {
                     input: "outline-none"
                 }}
             />
-            {/* <InputBox 
-                placeholder={"Cantidad de ganadores"}
-                value={noWinners}
-                onChange={(e) => handleWinnerValue(e)}
-                /> */}
 
             {/* // ALERTA QUE INDICA QUE LA CANTIDAD DE GANADORES DEBE SER MENOR A LA CANTIDAD DE PARTICIPANTES  */}
             {showAlert && (
