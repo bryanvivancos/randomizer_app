@@ -130,7 +130,7 @@ function Roulette() {
             <p className="text-sm text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
             <h2 className="text-xl font-bold">Ingresa los participantes uno por uno</h2>
                 
-            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 w-sm">
+            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 max-w-sm w-full">
 
                 {/* // INPUTS PARA INGRESAR PARTICIPANTES  */}
                 {inputFields.map((inputField, index) => (
@@ -175,7 +175,7 @@ function Roulette() {
             {/* // INGRESA LOS PARTICIPANTES EN UN TEXTAREA */}
             <h2 className="text-xl font-bold">O ingresa a todos los participantes</h2>
 
-            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 w-sm">
+            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 max-w-sm w-full">
 
                 <Textarea
                     
