@@ -15,11 +15,11 @@ const WinnerModal = ({ winners, onClose }) => {
 
     return (
         <section className="absolute w-dvw h-dvh top-0 left-0 grid place-items-center bg-[#000000b3] overflow-hidden">
-            <div className="bg-sky-700 h-72 w-72 border-2 border-sky-500 rounded-2xl flex flex-col justify-center items-center gap-10">
+            <div className="bg-sky-700 h-auto w-72 border-2 border-sky-500 rounded-2xl flex flex-col justify-center items-center gap-4 py-8">
 
                 <h2 className="font-Inter-Variable font-bold text-xl">Ganador/es:</h2>
                 
-                <ul>
+                <ul className= "text-center">
                     {winners.map((w, i) => <li key={i}>{w}</li>)}
                 </ul>
                 <button 
