@@ -6,7 +6,7 @@ const GameButton = ({ico, to, gameName, soon, padding}) => {
 
         <Link to={to} className={`bg-sky-500 rounded-2xl flex flex-col justify-center items-center max-w-40 w-full h-full group`}>
 
-            <svg className={`${soon ? '' : ' group-hover:animate-rotate-360'} min-h-18 max-w-full ${padding}`}>
+            <svg className={`${soon ? '' : ' group-hover:animate-rotate-360'} min-h-18 max-w-full ${padding}`} color='#ffffff'>
                 <use href={`${sprite}#${ico}`}/>
             </svg>
 
