@@ -4,7 +4,10 @@ import FieldsButton from "../components/atoms/FieldsButton";
 import WinnerModal from "../components/WinnerModal";
 import confetti from "canvas-confetti";
 import {Input, Textarea} from "@heroui/input";
-import { resetFields, saveToStorage } from "../logic/roulette/storage/storage";
+import { resetFields } from "../logic/roulette/storage/resetFields";
+import { useSaveToStorage } from "../hooks/hooks";
+import { selectWinner } from "../logic/roulette/selectWinner";
+
 
 function Roulette() {
 
@@ -33,11 +36,11 @@ function Roulette() {
     const [showAlert, setShowAlert] = useState(false) //enseña alerta si cantidad de ganadores no es la correcta
 
     // //Function to update number of winners
-    // const handleWinnerValue = (event) => {
-    //     setInputWinners(event.target.value)
-    // }
+        // const handleWinnerValue = (event) => {
+        //     setInputWinners(event.target.value)
+        // }
     
-    // //Function to update the value of an input field
+    //Function to update the value of an input field
     const handleValueChange = (index, event) => {
         const values = [...inputFields];
         values[index].value = event;
@@ -56,71 +59,33 @@ function Roulette() {
         setInputFields(newInputFields)
     }
 
-    // Function to select WINNER
-    const selectWinner = (noWinners) => {
+    //Manejo de Ganadores
+    const handleWinner = (noWinners) => {
+        const { showAlert: newAlert, winners: newWinners, showModal: newModal } = selectWinner({
+            noWinners:noWinners, 
+            inputsItem:inputFields, 
+            textArea: textValue})
 
-        //Selecting only the input fields
-            const inputsArrayNoFilter = []
-            const inputs = [...inputFields]
-            inputs.map((inputField) => {
-                inputField.value
-                inputsArrayNoFilter.push(inputField.value)
-            })
-            const inputsArray = inputsArrayNoFilter.filter(input => {
-                return input !== ""
-            }) //eliminando items vacios
-
-
-        //Selecting only the text fields
-            const textInputsStr = textValue.replace(/[\r\n]+/g," ") //eliminando saltos de linea
-            const textInputsArray = textInputsStr.split(" ") //convirtiendo en array
-            const textInputsArrayFilter = textInputsArray.filter(input => {
-                return input !== null && input !== undefined && input !== "" && input !== 0;
-            }) //eliminando items vacios
-            
-
-        //  EJECUTAMOS SELECCIONAR GANADORES SI LA CANTIDAD DE ESTOS ES MENOR A LA CANTIDAD DE PARTICIPANTES
-        if (inputsArray.length > 0 && textInputsArrayFilter.length > 0){
-            setShowAlert(true)
+        setShowAlert(newAlert)
+        if (newAlert) {
             setTimeout(() => {
                 setShowAlert(false)
-            }, 5000)
+            },5000)
         }
-        else if (inputsArray.length >= parseInt(noWinners)) {
-            // Desordenamos el array usando el algoritmo de Fisher-Yates
-
-            for (let i = inputsArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [inputsArray[i], inputsArray[j]] = [inputsArray[j], inputsArray[i]];
-            }
-            
-            // Retornamos los primeros 'cantidad' elementos
-            setWinners(inputsArray.slice(0,parseInt(noWinners)))
-            //Activamos modal para ganadores
-            setShowModal(true)
-        } 
-        else if (textInputsArrayFilter.length > 0 && textInputsArrayFilter.length >= parseInt(noWinners)) {
-
-            for (let i = textInputsArrayFilter.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [textInputsArrayFilter[i], textInputsArrayFilter[j]] = [textInputsArrayFilter[j], textInputsArrayFilter[i]];
-            }
-            // Retornamos los primeros 'cantidad' elementos
-            setWinners(textInputsArrayFilter.slice(0,parseInt(noWinners)))
-            //Activamos modal para ganadores
-            setShowModal(true)
-        } 
-        else {
-            setShowAlert(true)
-            setTimeout(() => {
-                setShowAlert(false)
-            }, 5000)
-        }
+        setWinners(newWinners)
+        setShowModal(newModal)
     }
 
-    saveToStorage ({
-        inputFields: inputFields,
-        textValue: textValue
+    // Guarda automáticamente inputFields
+    useSaveToStorage({
+        key: "inputFields",
+        value: JSON.stringify(inputFields) //json.stringify aqui porque si guarda el texto como strigify no devulve correctamente la cadena
+    })
+
+    // Guarda automáticamente textValue
+    useSaveToStorage({
+        key: "textValue",
+        value: textValue
     })
 
 
@@ -141,6 +106,14 @@ function Roulette() {
                             placeholder= "Ingresa un participante"
                             value={inputField.value}
                             onValueChange={(e) => handleValueChange(index,e)}
+                            onKeyDown={(e) => {  //funcion para que al presionar enter se agregue nuevo campo de input 
+                                if (e.key === "Enter") {
+                                    e.preventDefault()
+                                    if (inputField.value.trim() !== "") {
+                                        handleAddFields()
+                                    }
+                                }
+                            }}
                             className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 min-w-28"
                             classNames={{
                                 innerWrapper: "outline-none",
@@ -162,9 +135,10 @@ function Roulette() {
                     textOnBtn={"Añadir participante"}
                     icon={"plus"}/>
                     <FieldsButton
-                        onClick={() => resetFields({
-                            item:"input",
-                            setInputFields: setInputFields
+                        onClick={() =>
+                            resetFields({
+                                item: "input",
+                                resetFns: { setFields: setInputFields }
                             })
                         }
                         textOnBtn={"Reset"}
@@ -192,10 +166,10 @@ function Roulette() {
                     }}
                 />
                 <FieldsButton
-                        // onClick={() => resetFields("textarea",setTextValue(""))}
-                        onClick={() => resetFields({
-                            item:"textarea",
-                            setTextValue: setTextValue
+                        onClick={() =>
+                            resetFields({
+                                item: "textarea",
+                                resetFns: { setText: setTextValue }
                             })
                         }
                         textOnBtn={"Reset"}
@@ -210,6 +184,14 @@ function Roulette() {
                 placeholder= "Cantidad de ganadores"
                 value={noWinners}
                 onValueChange={setInputWinners}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault()
+                        if (noWinners.trim() !== "") {
+                            handleWinner(noWinners)
+                        }
+                    }
+                }}
                 className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto min-w-28"
                 classNames={{
                     innerWrapper: "outline-none",
@@ -221,12 +203,15 @@ function Roulette() {
             {/* // ALERTA QUE INDICA QUE LA CANTIDAD DE GANADORES DEBE SER MENOR A LA CANTIDAD DE PARTICIPANTES  */}
             {showAlert && (
                 <p className="text-white text-sm text-center">
-                    La cantidad de ganadores a escoger debe ser un número y menor a la cantidad de participantes
+                    La cantidad de ganadores a escoger debe ser un número, menor a la cantidad de participantes y solo 1 campo de ingreso debe esta activado.
                 </p>
             )}
 
             {/* // BOTON PARA ESCOGER GANADORES */}
-            <button className="border-2 border-sky-400 bg-sky-500 rounded-2xl w-40 h-12  font-Inter-Variable font-bold animate-pulsing animate-iteration-count-infinite cursor-pointer mt-4" onClick={() => selectWinner(noWinners)}>
+            <button 
+                className="border-2 border-sky-400 bg-sky-500 rounded-2xl w-40 h-12  font-Inter-Variable font-bold animate-pulsing animate-iteration-count-infinite cursor-pointer mt-4" 
+                onClick={() => handleWinner(noWinners)}
+                >
                 Ganador/es
             </button>
 

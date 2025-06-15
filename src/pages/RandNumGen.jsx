@@ -8,24 +8,41 @@ const RandNumGen = () => {
     const [result, setResult] = useState(null)
     const [showAlert, setShowAlert] = useState(false)
 
-    //FUNCION QUE GENERA EL NUMERO ALEATORIO
-    const generateRandomNum = (min, max) => {
-        //VERIFICA QUE HAYA CONTENIDO EN LOS INPUTS
+    // //FUNCION QUE GENERA EL NUMERO ALEATORIO
+    // const generateRandomNum = (min, max) => {
+    //     //VERIFICA QUE HAYA CONTENIDO EN LOS INPUTS
 
 
-        if ( parseInt(max) > 0 && parseInt(max) >= parseInt(min) ) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            const randomNum = Math.floor(Math.random() * (max - min + 1) + min)
-            setShowAlert(false)
-            setResult(randomNum)
-        }else {
-            setResult(null)
-            setShowAlert(true)
+    //     if ( parseInt(max) > 0 && parseInt(max) >= parseInt(min) ) {
+    //         min = Math.ceil(min);
+    //         max = Math.floor(max);
+    //         const randomNum = Math.floor(Math.random() * (max - min + 1) + min)
+    //         setShowAlert(false)
+    //         setResult(randomNum)
+    //     }else {
+    //         setResult(null)
+    //         setShowAlert(true)
+    //         setTimeout(() => {
+    //             setShowAlert(false)
+    //         }, 5000)
+    //     }
+    // }
+
+    const handleGenerateNum = (min,max) => {
+        const { result: newResult, showAlert: newShowAlert } = generateRandomNum({ min, max }) 
+
+        setResult(newResult)
+        setShowAlert(newShowAlert)
+        
+        // console.log(newResult)
+        // console.log(newShowAlert)
+
+        if (newShowAlert) {
             setTimeout(() => {
                 setShowAlert(false)
             }, 5000)
         }
+
     }
 
     return (
@@ -74,12 +91,12 @@ const RandNumGen = () => {
 
                     {/* // ALERTA QUE INDICA QUE DEBEN HABER NUMEROS EN LOS INPUTS  */}
                 {showAlert && (
-                    <p className="text-white text-sm">
-                        Ingrese números en las casillas de arriba.
+                    <p className="text-white text-sm text-center">
+                        Debe ingresar números en la parte superior y el número mínimo debe ser menor al máximo.
                     </p>
                 )}
 
-                <button className="border-2 border-sky-400 bg-sky-500 rounded-2xl w-40 h-12 font-Inter-Variable font-bold animate-pulsing animate-iteration-count-infinite cursor-pointer mb-4" onClick={() => generateRandomNum(minInputField,maxInputField)}>
+                <button className="border-2 border-sky-400 bg-sky-500 rounded-2xl w-40 h-12 font-Inter-Variable font-bold animate-pulsing animate-iteration-count-infinite cursor-pointer mb-4" onClick={() => handleGenerateNum(minInputField,maxInputField)}>
                     Generar
                 </button>
 
