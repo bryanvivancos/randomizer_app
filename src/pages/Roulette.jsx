@@ -90,7 +90,7 @@ function Roulette() {
 
 
     return (
-        <div className="font-Inter-Variable text-white flex flex-col items-center gap-8 my-14">
+        <div className="font-Inter-Variable text-white flex flex-col items-center gap-4 my-14">
             <h1 className="text-5xl font-bold text-balance text-center">Bienvenido a Roulette</h1>
             <p className="text-sm text-center max-w-xl px-2 text-balance">Ingresa los participantes y dale click al botón de debajo para escoger los ganadores aleatoriamente. SUERTE!</p>
             <h2 className="text-xl font-bold">Ingresa los participantes uno por uno</h2>
