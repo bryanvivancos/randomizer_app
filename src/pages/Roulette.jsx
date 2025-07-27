@@ -179,6 +179,8 @@ function Roulette() {
 
 
             {/* // INPUT PARA INGRESAR CANTIDAD DE GANADORES */}
+            <h2 className="text-xl font-bold">Ingresa la cantidad de ganadores</h2>
+            
             <Input
                 isRequired
                 placeholder= "Cantidad de ganadores"
