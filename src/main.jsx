@@ -8,6 +8,7 @@ import Roulette from './pages/Roulette'
 import NotFound from './pages/NotFound'
 import "./index.css"
 import RandNumGen from './pages/RandNumGen'
+import { SecretFriend } from './pages/SecretFriend'
 
 createRoot(document.getElementById('root')).render(
 <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
 			<Route path='/' element={<App />} />
 			<Route path='/roulette' element={<Roulette/>}/>
 			<Route path='/rand-num-generator' element={<RandNumGen/>}/>
+			<Route path='/secret-friend' element={<SecretFriend/>}/>
 			<Route path='/*' element={<NotFound/>}/>
 		</Routes>
 		<Footer/>

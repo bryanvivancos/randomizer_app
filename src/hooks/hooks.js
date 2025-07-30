@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export function useSaveToStorage ({ key, value }) {
     useEffect(() => {
-        window.localStorage.setItem(key, value) //no colocamos json.stringigy(value)
+        window.localStorage.setItem(key, value) //no colocamos json.stringigy(value), lo colocamo despues en caso se necesite
     }, [key, value])
 } 
 
