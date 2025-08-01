@@ -1,7 +1,5 @@
 import { Input } from "@heroui/input"
 import { useLocation, useNavigate } from "react-router-dom"
-import {useDateFormatter} from "@react-aria/i18n";
-import {CalendarDate, parseDate, getLocalTimeZone} from "@internationalized/date";
 
 export const SentSecretFriendConfirmation = () => {
 	const { state } = useLocation()
