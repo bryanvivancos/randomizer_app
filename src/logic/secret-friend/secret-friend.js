@@ -10,7 +10,7 @@ export const asignSecretFriend = ({ participants }) => {
         return input !== null && input !== undefined && input !== "" && input !== 0;
     }) //eliminando items vacios}
     
-    console.log(participantsArrayFiltered)
+    // console.log(participantsArrayFiltered)
     
     if ( participantsArrayFiltered.length < 3 ) {
         return {
@@ -36,7 +36,7 @@ export const asignSecretFriend = ({ participants }) => {
         availablesArray.splice(availablesArray.indexOf(choosed), 1)
     }
 
-    console.log(asigns)
+    // console.log(asigns)
     return {
         asigns,
         disclaimer: false

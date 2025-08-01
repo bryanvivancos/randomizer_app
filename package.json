@@ -10,13 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroui/date-input": "2.3.24",
+    "@heroui/form": "^2.1.24",
     "@heroui/input": "2.4.20",
+    "@heroui/number-input": "2.0.15",
+    "@internationalized/date": "3.8.2",
     "@midudev/tailwind-animations": "0.2.0",
     "@tailwindcss/vite": "4.1.8",
     "canvas-confetti": "1.9.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-router-dom": "^7.6.2",
+    "react-router-dom": "7.6.2",
     "tailwindcss": "4.1.8"
   },
   "devDependencies": {

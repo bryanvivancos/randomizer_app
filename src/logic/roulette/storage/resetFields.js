@@ -18,6 +18,16 @@ export const resetFields = ({ item, resetFns = {} }) => {
                 console.log("Se elimino el textarea")
             }
             break
+        case "secret-friend":
+            if (setText) {
+                setText("")
+                window.localStorage.removeItem("secretFriendRaw")
+                window.localStorage.removeItem("bucket")
+                window.localStorage.removeItem("organizer")
+                window.localStorage.removeItem("eventDate")
+                console.log("Se elimino el textarea")
+            }
+            break
         default:
             console.warn(`resetFields: Tipo de item desconocido ${item}`)
     }

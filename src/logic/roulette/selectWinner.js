@@ -31,7 +31,7 @@ export const selectWinner = ({ noWinners, inputsItem, textArea }) => {
         // Desordenamos el array usando el algoritmo de Fisher-Yates
 
         for (let i = inputsArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            let j = Math.floor(Math.random() * (i + 1));
             [inputsArray[i], inputsArray[j]] = [inputsArray[j], inputsArray[i]];
         }
         
@@ -46,7 +46,7 @@ export const selectWinner = ({ noWinners, inputsItem, textArea }) => {
     else if (textInputsArrayFilter.length > 0 && textInputsArrayFilter.length >= parseInt(noWinners)) {
 
         for (let i = textInputsArrayFilter.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            let j = Math.floor(Math.random() * (i + 1));
             [textInputsArrayFilter[i], textInputsArrayFilter[j]] = [textInputsArrayFilter[j], textInputsArrayFilter[i]];
         }
         return {
