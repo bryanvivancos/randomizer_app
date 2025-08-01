@@ -61,10 +61,9 @@ const RandNumGen = () => {
                     className="gap-2"
                     // className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto min-w-28"
                     classNames={{
-                        innerWrapper: "outline-none",
-                        mainWrapper: "outline-none border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-full min-w-28",
+                        mainWrapper: "outline-none border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-full w-42",
+                        base: "flex justify-between",
                         input: "outline-none",
-                        label: "w-full"
                     }}
                 />
 
@@ -78,10 +77,9 @@ const RandNumGen = () => {
                     className="gap-2"
                     // className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-auto min-w-28"
                     classNames={{
-                        innerWrapper: "outline-none",
-                        mainWrapper: "outline-none border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-full min-w-28",
+                        mainWrapper: "outline-none border-2 rounded-xl p-2 border-sky-700 bg-sky-900 w-full w-42",
+                        base: "flex justify-between",
                         input: "outline-none",
-                        label: "w-full"
                     }}
                 />
 
