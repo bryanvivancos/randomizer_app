@@ -34,7 +34,7 @@ function Roulette() {
     const [winners, setWinners] = useState([])
     const [showModal, setShowModal] = useState(false) //enseña ganadores en modal
     const [showAlert, setShowAlert] = useState(false) //enseña alerta si cantidad de ganadores no es la correcta
-    const [showTextareaAlert, setShowTextareAlert] = useState(false)
+    const [showTextareaAlert, setShowTextareaAlert] = useState(false)
 
     // //Function to update number of winners
         // const handleWinnerValue = (event) => {
@@ -154,7 +154,7 @@ function Roulette() {
 
 
                 <Textarea
-                    onClick={() => setShowTextareAlert(true)}
+                    onClick={() => setShowTextareaAlert(true)}
                     labelPlacement="outside"
                     placeholder="Ingresa a todos los participantes"
                     description="❗ Importante: Ingresa un nombre uno debajo de otro para su correcto funcionamiento."
@@ -164,7 +164,7 @@ function Roulette() {
                     classNames={{
                         input: "outline-none",
                         inputWrapper:"border-2 rounded-xl p-4 border-sky-700 bg-sky-900",
-                        helperWrapper:`${showTextareaAlert ? "block" : ""}mt-2 text-balance text-gray-400 text-xs text-center`,
+                        helperWrapper:`${showTextareaAlert ? "block" : ""} mt-2 text-balance text-gray-400 text-xs text-center`,
                         // description:"text-balance text-gray-400 text-xs text-center"
                     }}
                 />

@@ -78,7 +78,7 @@ export const SecretFriend = () => {
         }
     });
 
-    const [showTextareaAlert, setShowTextareAlert] = useState(false)
+    const [showTextareaAlert, setShowTextareaAlert] = useState(false)
         
     // const [secretFriendsAsigns, setSecretFriendsAsigns] = useState({})
     
@@ -185,7 +185,7 @@ export const SecretFriend = () => {
             <div className="flex flex-col gap-4 justify-center items-center border-2 border-sky-700 p-2 rounded-2xl bg-gray-800 max-w-sm w-full">
 
                 <Textarea
-                    onClick={() => setShowTextareAlert(true)}
+                    onClick={() => setShowTextareaAlert(true)}
                     labelPlacement="outside"
                     placeholder="Ingresa a todos los participantes"
                     description="❗Importante: Ingresa un nombre uno debajo de otro para su correcto funcionamiento."
