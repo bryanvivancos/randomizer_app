@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from 'react-router-dom'
-import {Form} from "@heroui/form";
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Input, Textarea } from "@heroui/input"
 import {NumberInput} from "@heroui/number-input";
 import {DateInput} from "@heroui/date-input";
@@ -12,80 +11,149 @@ import {asignSecretFriend} from "../logic/secret-friend/secret-friend"
 import { useSaveToStorage } from "../hooks/hooks";
 
 
+//TO DO AUTH ROUTE
+// export const AuthRoute = () => {
+
+//     if (validateInputs(participants)) {
+//             navigate('/secret-friend')
+//             return
+//         }
+//     return (
+//         <div>SecretFriend</div>
+//     )
+// }
+
+
 export const SecretFriend = () => {
     //Getting fields from TextArea LocalStorage
     const [secretFriendRaw, setSecretFriendRaw] = useState(() => {
         const textValuesFromStorage = window.localStorage.getItem("secretFriendRaw")
-        return textValuesFromStorage ? textValuesFromStorage : ""
+        return {
+            input: textValuesFromStorage ? textValuesFromStorage : "",
+            status: 'initial',
+            errorMessage: '',
+        }
     })
 
     const [ bucket, setBucket ] = useState(() => {
         const bucketFromStorage = window.localStorage.getItem('bucket')
-        return bucketFromStorage ? Number(bucketFromStorage) : null
+        return {
+            amount: bucketFromStorage ? Number(bucketFromStorage) : "null", 
+            status: 'initial'
+        } 
     })
     
     const [ organizer, setOrganizer ] = useState(() => {
         const organizerFromStorage = window.localStorage.getItem('organizer')
-        return organizerFromStorage ? organizerFromStorage : ""
+        return {
+            input: organizerFromStorage ? organizerFromStorage : "",
+            status: 'initial'
+        }
     })
 
     const [eventDate, setEventDate] = useState(() => {
-        const eventSaved = window.localStorage.getItem("eventDate");
-        if (eventSaved) {
+        const dateSaved = window.localStorage.getItem("eventDate");
+        if (dateSaved) {
             try {
-            const { year, month, day } = JSON.parse(eventSaved);
-            return new CalendarDate(year, month, day);
-            } catch {
-            return new CalendarDate(1995, 11, 6);
+            const { year, month, day } = JSON.parse(dateSaved);
+                if ( year && month && day ) {
+                    return {
+                        date: new CalendarDate(year, month, day),
+                        status: 'initial'
+                    } 
+                }
+            } catch (e) {
+            // return new CalendarDate(1995, 11, 6);
+            // return {
+            //     date: null,
+            //     status: 'initial'
+            //     }
+                console.warn("Error parsing event date from storage", e)
             }
         }
-        return new CalendarDate(1995, 11, 6);
+        // return new CalendarDate(1995, 11, 6);
+        return {
+            date: null,
+            status: 'initial'
+        }
     });
-        
-    const [secretFriendsAsigns, setSecretFriendsAsigns] = useState({})
 
-    const [showDisclaimer, setShowDisclaimer] = useState(false)
+    const [showTextareaAlert, setShowTextareAlert] = useState(false)
+        
+    // const [secretFriendsAsigns, setSecretFriendsAsigns] = useState({})
     
     // Guarda en el local Storage
     // Texto de participantes
     useSaveToStorage({
         key: "secretFriendRaw",
-        value: secretFriendRaw
+        value: secretFriendRaw.input
     })
 
     //Presupuesto
     useSaveToStorage({
         key: "bucket",
-        value: bucket
+        value: bucket.amount
     })
 
     //Organizador
     useSaveToStorage({
         key: "organizer",
-        value: organizer
+        value: organizer.input
     })
 
     //Fecha del evento
     useSaveToStorage ({
         key: "eventDate",
-        value: eventDate ? JSON.stringify({
-            year: eventDate.year,
-            month: eventDate.month,
-            day: eventDate.day
+        value: eventDate.date ? JSON.stringify({
+            year: eventDate.date.year,
+            month: eventDate.date.month,
+            day: eventDate.date.day
         }) : ""
     })
 
-
     const navigate = useNavigate()
-    const handleSecretFriend = (participants) => {
-        const {asigns, disclaimer}= asignSecretFriend({participants})
-        
-        if (typeof asigns !== 'object' || disclaimer === true){
-            navigate("/secret-friend")
-            return
+    
+    const validateInputs = (participants) => {
+        let hasError = false
+        const {asigns, hasLessThanThree, isEmpty}= asignSecretFriend({participants})
+
+
+        if (typeof asigns !== 'object' || isEmpty === true) {
+            setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Este campo es obligatorio'}))
+            hasError = true
+
+            console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
         }
+
+        if (hasLessThanThree === true) {
+            setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Ingresa de 3 a más participantes para jugar'}))
+            hasError = true
+
+            console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
+        }
+
+        if (!bucket.amount || bucket.amount <= 0 || typeof bucket.amount !== 'number') {
+            setBucket(prev => ({...prev, status: 'error'}))
+            hasError = true
+        }
+
+        if (!organizer.input.trim()) {
+            setOrganizer(prev => ({ ...prev, status: 'error' }))
+            hasError = true
+        }
+
+        if (!eventDate.date) {
+            setEventDate(prev => ({ ...prev, status: 'error' }))
+            hasError = true
+        }
+
+        return hasError
+    }
+
+    const handleSecretFriend = (participants) => {
+        const {asigns}= asignSecretFriend({participants})
         
-        console.log("Secret friends: ", asigns, "Disclaimer: ",disclaimer, "Presupuesto: ", bucket, "Organizador: ", organizer )
+        console.log("Secret friends: ", asigns, "Presupuesto: ", bucket.amount, "Organizador: ", organizer.input )
 
         navigate("/secret-friend-sent-confirmation", {
             state:{
@@ -95,24 +163,16 @@ export const SecretFriend = () => {
                 eventDate
             }
         })
-        setShowDisclaimer(disclaimer)
-    //     setSecretFriendsAsigns(asigns)
     }
 
-    let disclaimerDisplay = ""
-    const participantsDisclaimer = "La cantidad de nombres para el juego debe ser mayor a tres"
-    const bucketDisclaimer = "Introduce un Presupuesto"
-    const organizerDisclaimer = "Introduce el nombre del organizador"
-
-    if (showDisclaimer && bucket > 0 && organizer.length > 0) {
-        disclaimerDisplay = participantsDisclaimer
+    const handleClick = (participants) => {
+        // console.log(!validateInputs(participants))
+        if (validateInputs(participants)) {
+            // navigate('/secret-friend')
+            return <Navigate to="/secret-friend"/>
+        }
+        handleSecretFriend(participants)
     }
-    // if (!showDisclaimer && bucket === 0 && organizer.length > 0) {
-    //     disclaimerDisplay = participantsDisclaimer + bucketDisclaimer
-    // }
-    // if (showDisclaimer && bucket === 0 && organizer.length === 0) {
-    //     disclaimerDisplay = participantsDisclaimer + bucketDisclaimer + organizerDisclaimer
-    // }
 
     return (
         <div className="font-Inter-Variable text-white flex flex-col items-center gap-4 my-14">
@@ -122,48 +182,50 @@ export const SecretFriend = () => {
             {/* // INGRESA LOS PARTICIPANTES EN UN TEXTAREA */}
             <h2 className="text-xl font-bold">Ingresa a todos los participantes</h2>
 
-            <Form className="flex items-center">
-            <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 max-w-sm w-full">
+            <div className="flex flex-col gap-4 justify-center items-center border-2 border-sky-700 p-2 rounded-2xl bg-gray-800 max-w-sm w-full">
 
                 <Textarea
-                    isRequired
+                    onClick={() => setShowTextareAlert(true)}
                     labelPlacement="outside"
                     placeholder="Ingresa a todos los participantes"
-                    value={secretFriendRaw}
-                    onValueChange={setSecretFriendRaw}
+                    description="❗Importante: Ingresa un nombre uno debajo de otro para su correcto funcionamiento."
+                    value={secretFriendRaw.input}
+                    onChange={e => setSecretFriendRaw({
+                        input: e.target.value,
+                        status: 'initial'
+                    })}
+                    // onValueChange={setSecretFriendRaw}
                     variant="underlined"
-                    className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900"
                     classNames={{
-                        input: "outline-none"
+                        input: "outline-none",
+                        helperWrapper:`mt-2  ${showTextareaAlert ? "block" : ""} text-balance text-gray-400 text-xs text-center`,
+                        // description:"text-balance text-gray-400 text-xs text-center"
                     }}
                 />
-
-                <FieldsButton
-                    onClick={() =>
-                        resetFields({
-                            item: "secret-friend",
-                            resetFns: { setText: setSecretFriendRaw}
-                        })
-                    }
-                    textOnBtn={"Reset"}
-                    icon={"restart-icon"}/>
-            
             </div>
+
+            {secretFriendRaw.status === 'error' && (
+                <span className="text-red-500 text-sm">{secretFriendRaw.errorMessage}</span>
+            )}
 
             <NumberInput
                 isRequired
                 placeholder="0.00"
                 label="Presupuesto"
                 labelPlacement="outside"
-                value={bucket}
-                onValueChange={v => setBucket(v)}
+                value={bucket.amount}
+                onChange={e => setBucket({
+                    amount: Number(e.target.value), 
+                    status:'initial'})}
+                // isInvalid={bucket.status === 'error'}
+                // onValueChange={v => setBucket(v)}
                 className="max-w-sm"
                 classNames={{
-                    label:"relative pb-4",
+                    label:"relative pb-3",
                     clearButton:"pointer-events-auto",
                     input:"outline-none",
                     inputWrapper:"flex flex-col items-start",
-                    innerWrapper:"flex bg-sky-900 border-2 border-sky-700 rounded-xl px-3 gap-2"
+                    innerWrapper:"flex bg-sky-900 border-2 border-sky-700 rounded-xl px-3 gap-2",
                 }}
                 // endContent={
                     //     <div className="flex items-center">
@@ -186,16 +248,21 @@ export const SecretFriend = () => {
                     //     </select> */}
                     //     </div>
                     // }
-                // eslint-disable-next-line no-console}
+                // // eslint-disable-next-line no-console}
             />
 
+            {bucket.status === 'error' && (
+                <span className="text-red-500 text-sm">Este campo es obligatorio.</span>
+            )}
+
             <Input
-                isRequired
                 label="Organizador"
                 labelPlacement="outside-top"
                 placeholder="Ingresa tu nombre"
-                value={organizer}
-                onValueChange={setOrganizer}
+                value={organizer.input}
+                onChange={e => {setOrganizer({ input: e.target.value, status: 'initial' })}}
+                // onValueChange={}
+                isInvalid = {organizer.status === 'error'}
                 type="text"
                 className="max-w-sm"
                 classNames={{
@@ -206,20 +273,24 @@ export const SecretFriend = () => {
                 }}
             />
 
+            {organizer.status === 'error' && (
+                <span className="text-red-500 text-sm">Este campo es obligatorio.</span>
+            )}
+
             <DateInput
                 label="Fecha del evento"
                 labelPlacement="outside"
-                value={eventDate}
-                onChange={setEventDate}
+                value={eventDate.date ?? null}
+                onChange={value => setEventDate({ date: value, status: 'initial' })}
                 placeholderValue={new CalendarDate(1995, 11, 6)}
                 startContent={
                     <CalendarIcon className="text-2xl text-default-400 pointer-events-none shrink-0" />
                 }
-                errorMessage={(value) => {
-                    if (value.isInvalid) {
-                        return "Please enter a valid date.";
-                    }
-                }}
+                // errorMessage={(value) => {
+                //     if (value.isInvalid) {
+                //         return "Please enter a valid date.";
+                //     }
+                // }}
                 className="max-w-sm"
                 classNames={{
                     label:"px-3",
@@ -228,21 +299,40 @@ export const SecretFriend = () => {
                 }}
             />
 
-            {showDisclaimer && (
-            <p className="text-white text-sm text-center max-w-xl mt-4">
-                {disclaimerDisplay}
-            </p>
+            {eventDate.status === 'error' && (
+                <span className="text-red-500 text-sm">Este campo es obligatorio.</span>
             )}
 
-            <div className="border-2 border-gray-500 rounded-full w-2xl my-4"></div>
+            <div className="border-2 border-gray-500 rounded-full w-2xl my-4"/>
 
+            <div className="flex gap-4 ">
+                {/* // boton iniciar el juego */}
                 <button 
-                    className="border-2 border-sky-400 bg-sky-500 rounded-2xl w-40 h-12  font-Inter-Variable font-bold cursor-pointer" 
-                    onClick={() => {handleSecretFriend(secretFriendRaw)}}
-                    >
+                    className="border-2 border-sky-400 bg-sky-500 rounded-xl w-auto font-Inter-Variable font-bold cursor-pointer hover:scale-105 px-2 shadow-black" 
+                    // onClick={() => {handleSecretFriend(secretFriendRaw)}}
+                    onClick={() => {handleClick(secretFriendRaw.input)}}
+                >
                     Empieza el juego
                 </button>
-            </Form>
+
+                {/* // boton de reset entradas de datos y localStorage */}
+                <FieldsButton
+                    onClick={() =>
+                        resetFields({
+                            item: "secret-friend",
+                            resetFns: {
+                                setSecretFriendRaw,
+                                setBucket,
+                                setOrganizer,
+                                setEventDate,
+                            }
+                        })
+                    }
+                    textOnBtn={"Reset"}
+                    icon={"restart-icon"}
+                />
+            
+            </div>
         </div>
     )
 }

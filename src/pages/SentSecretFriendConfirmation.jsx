@@ -3,14 +3,18 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 export const SentSecretFriendConfirmation = () => {
 	const { state } = useLocation()
-  	const navigate = useNavigate()
+	const navigate = useNavigate()
 
-  	const { asigns, bucket, organizer, eventDate } = state
+	// if (!state) {
+	// 	return <div> No hay datos disponibles </div>
+	// }
+
+	const { asigns, bucket, organizer, eventDate } = state
 
 	// restamos 1 unidad al event.month porque date los meses empiezan a contabilizar desde 0
-	let monthOfTheEvent = eventDate.month - 1
+	let monthOfTheEvent = eventDate.date.month - 1
 	// instancias Date
-	let displayedDate = new Date(eventDate.year, monthOfTheEvent, eventDate.day)
+	let displayedDate = new Date(eventDate.date.year, monthOfTheEvent, eventDate.date.day)
 	// instanciamos la fecha y formateamos a español 
 	let esDisplayedDate = new Intl.DateTimeFormat("es",{
 		weekday:'long', day:'2-digit', month:'long', year:'numeric'
@@ -26,8 +30,8 @@ export const SentSecretFriendConfirmation = () => {
 			<h2 className="text-xl font-bold mb-4">Envíale a cada participante su amigo secreto</h2>
 
 			<div className="max-w-2xl">
-				<h3>{`Organizador: ${organizer}`}</h3>
-				<h3>{`Presupuesto: ${bucket}`}</h3>
+				<h3>{`Organizador: ${organizer.input}`}</h3>
+				<h3>{`Presupuesto: ${bucket.amount}`}</h3>
 				<h3>{`Fecha: ${esDisplayedDate}`}</h3>
 
 				<ul className="space-y-2 mt-8">

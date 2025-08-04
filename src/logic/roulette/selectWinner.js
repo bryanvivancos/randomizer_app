@@ -15,11 +15,15 @@ export const selectWinner = ({ noWinners, inputsItem, textArea }) => {
 
 
     //Selecting only the text fields
-        const textInputsStr = textArea.replace(/[\r\n]+/g," ") //eliminando saltos de linea
-        const textInputsArray = textInputsStr.split(" ") //convirtiendo en array
-        const textInputsArrayFilter = textInputsArray.filter(input => {
-            return input !== null && input !== undefined && input !== "" && input !== 0;
-        }) //eliminando items vacios
+        
+        // const textInputsStr = textArea.replace(/[\r\n]+/g," ") //eliminando saltos de linea
+        // const textInputsArray = textInputsStr.split(" ") //convirtiendo en array
+        // const textInputsArrayFilter = textInputsArray.filter(input => {
+            //     return input !== null && input !== undefined && input !== " " && input !== 0;
+            // }) //eliminando items vacios
+
+        const textInputsArray = textArea.split(/\r?\n/) //convierte en array el input teniendo como divisor el salto de linea
+        const textInputsArrayFilter = textInputsArray.filter(input => input) //filtra entre el array y selecciona solo elementos que tengan contenido
         
 
     //  EJECUTAMOS SELECCIONAR GANADORES SI LA CANTIDAD DE ESTOS ES MENOR A LA CANTIDAD DE PARTICIPANTES

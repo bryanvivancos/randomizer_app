@@ -34,6 +34,7 @@ function Roulette() {
     const [winners, setWinners] = useState([])
     const [showModal, setShowModal] = useState(false) //enseña ganadores en modal
     const [showAlert, setShowAlert] = useState(false) //enseña alerta si cantidad de ganadores no es la correcta
+    const [showTextareaAlert, setShowTextareAlert] = useState(false)
 
     // //Function to update number of winners
         // const handleWinnerValue = (event) => {
@@ -131,7 +132,7 @@ function Roulette() {
                 {/* // BONTON PARA AGREGAR CASILLA DE PARTICIPANTES  */}
                 <div className="flex gap-4 justify-">
                     <FieldsButton
-                    onClick={handleAddFields}
+                    onPress={handleAddFields}
                     textOnBtn={"Añadir participante"}
                     icon={"plus"}/>
                     <FieldsButton
@@ -151,18 +152,20 @@ function Roulette() {
 
             <div className="flex flex-col gap-4 justify-center items-center border-2 border-gray-700 p-4 rounded-2xl bg-gray-800 max-w-sm w-full">
 
+
                 <Textarea
-                    
+                    onClick={() => setShowTextareAlert(true)}
                     labelPlacement="outside"
                     placeholder="Ingresa a todos los participantes"
+                    description="❗ Importante: Ingresa un nombre uno debajo de otro para su correcto funcionamiento."
                     value={textValue}
                     variant="underlined"
                     onValueChange={setTextValue}
-                    className="border-2 rounded-xl p-2 border-sky-700 bg-sky-900"
                     classNames={{
-                        innerWrapper: "outline-none",
-                        mainWrapper: "outline-none",
-                        input: "outline-none"
+                        input: "outline-none",
+                        inputWrapper:"border-2 rounded-xl p-4 border-sky-700 bg-sky-900",
+                        helperWrapper:`${showTextareaAlert ? "block" : ""}mt-2 text-balance text-gray-400 text-xs text-center`,
+                        // description:"text-balance text-gray-400 text-xs text-center"
                     }}
                 />
                 <FieldsButton
@@ -174,8 +177,7 @@ function Roulette() {
                         }
                         textOnBtn={"Reset"}
                         icon={"restart-icon"}/>
-                
-                </div>
+            </div>
 
 
             {/* // INPUT PARA INGRESAR CANTIDAD DE GANADORES */}
@@ -204,7 +206,7 @@ function Roulette() {
 
             {/* // ALERTA QUE INDICA QUE LA CANTIDAD DE GANADORES DEBE SER MENOR A LA CANTIDAD DE PARTICIPANTES  */}
             {showAlert && (
-                <p className="text-white text-sm text-center">
+                <p className="text-white text-sm text-center w-2xl">
                     La cantidad de ganadores a escoger debe ser un número, menor a la cantidad de participantes y solo 1 campo de ingreso debe esta activado.
                 </p>
             )}
