@@ -7,11 +7,12 @@ export const asignSecretFriend = ({ participants }) => {
     // const participantsArrayFiltered = textInputsArray.filter(input => {
     //     return input !== null && input !== undefined && input !== "" && input !== 0;
     // }) //eliminando items vacios}
-
-    const textInputsArray = participants.split(/\r?\n/) //convierte en array el input teniendo como divisor el salto de linea
-        const participantsArrayFiltered = textInputsArray.filter(input => input) //filtra entre el array y selecciona solo elementos que tengan contenido
     
     //valida si la entrada de datos de participantes no esta vacia
+    
+    const textInputsArray = participants.split(/\r?\n/) //convierte en array el input teniendo como divisor el salto de linea
+    const participantsArrayFiltered = textInputsArray.filter(input => input) //filtra entre el array y selecciona solo elementos que tengan contenido
+    
     if ( participantsArrayFiltered.length === 0 ) {
         return {
             asigns: null,
@@ -61,56 +62,51 @@ export const asignSecretFriend = ({ participants }) => {
 
 //TO DO AUTH ROUTE, REFACTORIZAR FUNCIONES PARA CREAR UN COMPONENTE AUTH ROUTE
 
-// export const validateInputs = ({participants, bucket, organizer, eventDate , fns = {}}) => {
+export const validateInputs = ({participants, bucket, organizer, eventDate }) => {
 
-//         let hasError = false
-//         const {asigns, hasLessThanThree, isEmpty}= asignSecretFriend({participants})
+    //creamos errorMessages para guardar los mensajes de error 
+    const errorMessages = {
+        secretFriend: null,
+        bucket: null,
+        organizer: null,
+        eventDate: null,
+    }
 
-//         const {
-//             setSecretFriendRaw,
-//             setBucket,
-//             setOrganizer,
-//             setEventDate
-//         } = fns
+    const {asigns, hasLessThanThree, isEmpty}= asignSecretFriend({participants})
 
 
-//         if (typeof asigns !== 'object' || isEmpty === true) {
-//             setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Este campo es obligatorio'}))
-//             hasError = true
+    if (typeof asigns !== 'object' || isEmpty === true) {
+        errorMessages.secretFriend = 'Este campo es obligatorio'
+    }
 
-//             console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
-//         }
+    if (hasLessThanThree === true) {
+        errorMessages.secretFriend = 'Ingrese de 3 a más participantes para jugar'
+    }
 
-//         if (hasLessThanThree === true) {
-//             setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Ingresa de 3 a más participantes para jugar'}))
-//             hasError = true
+    if (!bucket.amount || bucket.amount <= 0 || typeof bucket.amount !== 'number') {       
+        errorMessages.bucket = 'Este campo es obligatorio'
+    }
 
-//             console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
-//         }
+    if (!organizer.input.trim()) {
+        errorMessages.organizer = 'Este campo es obligatorio'
+    }
 
-//         if (!bucket.amount || bucket.amount <= 0 || typeof bucket.amount !== 'number') {
-//             setBucket(prev => ({...prev, status: 'error'}))
-//             hasError = true
-//         }
+    if (!eventDate.date) {
+        errorMessages.eventDate = 'Este campo es obligatorio'
+    }
 
-//         if (!organizer.input.trim()) {
-//             setOrganizer(prev => ({ ...prev, status: 'error' }))
-//             hasError = true
-//         }
+    // convierte en array errorMessages y manda false o true si es null o no 
+    const hasError = !(Object.values(errorMessages).every(e => e === null))
 
-//         if (!eventDate.date) {
-//             setEventDate(prev => ({ ...prev, status: 'error' }))
-//             hasError = true
-//         }
-
-//         return hasError
-//     }
+    return {hasError, errorMessages}
+}
 
 
 // export const AuthRoute = (props) => {
 
-//     if (validateInputs(
-//     )) {
+//     const { hasError } = validateInputs()
+
+//     if (hasError) {
 //         return <Navigate to= "/secret-friend" />
 //     }
 

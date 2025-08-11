@@ -7,24 +7,25 @@ import { CalendarIcon } from "../assets/CalendarIcon";
 import {CalendarDate} from "@internationalized/date";
 import FieldsButton from "../components/atoms/FieldsButton"
 import { resetFields } from "../logic/roulette/storage/resetFields"
-import {asignSecretFriend} from "../logic/secret-friend/secret-friend"
+import {asignSecretFriend, validateInputs} from "../logic/secret-friend/secret-friend"
 import { useSaveToStorage } from "../hooks/hooks";
+import { useValidateSecretFriend } from "../hooks/hooks"
 
 
 //TO DO AUTH ROUTE
-// export const AuthRoute = () => {
+export const ProtectedRoute = ({ children }) => {
+    const { isValidate } = useValidateSecretFriend()
 
-//     if (validateInputs(participants)) {
-//             navigate('/secret-friend')
-//             return
-//         }
-//     return (
-//         <div>SecretFriend</div>
-//     )
-// }
+    if (!isValidate) {
+            return <Navigate to="/secret-friend" replace/>
+        }
+    return children
+}
 
 
 export const SecretFriend = () => {
+
+    const { setIsValidate } = useValidateSecretFriend()
     //Getting fields from TextArea LocalStorage
     const [secretFriendRaw, setSecretFriendRaw] = useState(() => {
         const textValuesFromStorage = window.localStorage.getItem("secretFriendRaw")
@@ -112,49 +113,99 @@ export const SecretFriend = () => {
     })
 
     const navigate = useNavigate()
-    
-    const validateInputs = (participants) => {
-        let hasError = false
-        const {asigns, hasLessThanThree, isEmpty}= asignSecretFriend({participants})
+
+    // const validateInputs = (participants) => {
+    //     let hasError = false
+    //     const {asigns, hasLessThanThree, isEmpty}= asignSecretFriend({participants})
 
 
-        if (typeof asigns !== 'object' || isEmpty === true) {
-            setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Este campo es obligatorio'}))
-            hasError = true
+    //     if (typeof asigns !== 'object' || isEmpty === true) {
+    //         setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Este campo es obligatorio'}))
+    //         hasError = true
 
-            console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
-        }
+    //         console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
+    //     }
 
-        if (hasLessThanThree === true) {
-            setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Ingresa de 3 a más participantes para jugar'}))
-            hasError = true
+    //     if (hasLessThanThree === true) {
+    //         setSecretFriendRaw( prev => ({...prev ,status: 'error', errorMessage: 'Ingresa de 3 a más participantes para jugar'}))
+    //         hasError = true
 
-            console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
-        }
+    //         console.log("error participants: ", hasError, "hasLessThanThree", hasLessThanThree, "participantes", asigns)
+    //     }
 
-        if (!bucket.amount || bucket.amount <= 0 || typeof bucket.amount !== 'number') {
-            setBucket(prev => ({...prev, status: 'error'}))
-            hasError = true
-        }
+    //     if (!bucket.amount || bucket.amount <= 0 || typeof bucket.amount !== 'number') {
+    //         setBucket(prev => ({...prev, status: 'error'}))
+    //         hasError = true
+    //     }
 
-        if (!organizer.input.trim()) {
-            setOrganizer(prev => ({ ...prev, status: 'error' }))
-            hasError = true
-        }
+    //     if (!organizer.input.trim()) {
+    //         setOrganizer(prev => ({ ...prev, status: 'error' }))
+    //         hasError = true
+    //     }
 
-        if (!eventDate.date) {
-            setEventDate(prev => ({ ...prev, status: 'error' }))
-            hasError = true
-        }
+    //     if (!eventDate.date) {
+    //         setEventDate(prev => ({ ...prev, status: 'error' }))
+    //         hasError = true
+    //     }
 
-        return hasError
-    }
+    //     return hasError
+    // }
 
-    const handleSecretFriend = (participants) => {
+    // const handleSecretFriend = (participants) => {
+    //     const {asigns}= asignSecretFriend({participants})
+    //     navigate("/secret-friend-sent-confirmation", {
+    //         state:{
+    //             asigns,
+    //             bucket,
+    //             organizer,
+    //             eventDate
+    //         }
+    //     })
+    // }
+
+    const handleClick = (participants) => {
         const {asigns}= asignSecretFriend({participants})
-        
-        console.log("Secret friends: ", asigns, "Presupuesto: ", bucket.amount, "Organizador: ", organizer.input )
 
+        const {hasError, errorMessages} = validateInputs({participants, bucket, organizer,eventDate})
+        
+        if (errorMessages.secretFriend) {
+            setSecretFriendRaw(prev => ({
+                ...prev,
+                status: 'error',
+                errorMessage: errorMessages.secretFriend
+            }))
+        }
+        
+        if (errorMessages.bucket) {
+            setBucket(prev => ({
+                ...prev,
+                status: 'error',
+                errorMessage: errorMessages.bucket
+            }))
+        }
+        
+        if (errorMessages.organizer) {
+            setOrganizer(prev => ({
+                ...prev,
+                status: 'error',
+                errorMessage: errorMessages.organizer
+            }))
+        }
+        
+        if (errorMessages.eventDate) {
+            setEventDate(prev => ({
+                ...prev,
+                status:'error',
+                errorMessage: errorMessages.eventDate
+            }))
+        }
+        
+        setIsValidate(!hasError) //proteccion de rutas
+        
+        if (hasError){ 
+            return <Navigate to="/secret-friend"/>
+        } //regresa a la pagina secret-friend si hay errores
+        
         navigate("/secret-friend-sent-confirmation", {
             state:{
                 asigns,
@@ -162,16 +213,7 @@ export const SecretFriend = () => {
                 organizer,
                 eventDate
             }
-        })
-    }
-
-    const handleClick = (participants) => {
-        // console.log(!validateInputs(participants))
-        if (validateInputs(participants)) {
-            // navigate('/secret-friend')
-            return <Navigate to="/secret-friend"/>
-        }
-        handleSecretFriend(participants)
+        }) //dirige a la siguiente pagina con los datos del form
     }
 
     return (
@@ -194,12 +236,10 @@ export const SecretFriend = () => {
                         input: e.target.value,
                         status: 'initial'
                     })}
-                    // onValueChange={setSecretFriendRaw}
                     variant="underlined"
                     classNames={{
                         input: "outline-none",
                         helperWrapper:`mt-2  ${showTextareaAlert ? "block" : ""} text-balance text-gray-400 text-xs text-center`,
-                        // description:"text-balance text-gray-400 text-xs text-center"
                     }}
                 />
             </div>
@@ -217,8 +257,6 @@ export const SecretFriend = () => {
                 onChange={e => setBucket({
                     amount: Number(e.target.value), 
                     status:'initial'})}
-                // isInvalid={bucket.status === 'error'}
-                // onValueChange={v => setBucket(v)}
                 className="max-w-sm"
                 classNames={{
                     label:"relative pb-3",
@@ -261,7 +299,6 @@ export const SecretFriend = () => {
                 placeholder="Ingresa tu nombre"
                 value={organizer.input}
                 onChange={e => {setOrganizer({ input: e.target.value, status: 'initial' })}}
-                // onValueChange={}
                 isInvalid = {organizer.status === 'error'}
                 type="text"
                 className="max-w-sm"
@@ -286,11 +323,6 @@ export const SecretFriend = () => {
                 startContent={
                     <CalendarIcon className="text-2xl text-default-400 pointer-events-none shrink-0" />
                 }
-                // errorMessage={(value) => {
-                //     if (value.isInvalid) {
-                //         return "Please enter a valid date.";
-                //     }
-                // }}
                 className="max-w-sm"
                 classNames={{
                     label:"px-3",

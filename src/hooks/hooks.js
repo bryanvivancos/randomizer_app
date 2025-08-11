@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { SecretFriendContext } from "../contexts/SecretFriendContext";
 
 export function useSaveToStorage ({ key, value }) {
     useEffect(() => {
@@ -6,8 +7,7 @@ export function useSaveToStorage ({ key, value }) {
     }, [key, value])
 } 
 
-
-
+export const useValidateSecretFriend = () => useContext(SecretFriendContext)
 
 // export function useSaveToStorage () {
 //     const [field, setFields] = useState("")
